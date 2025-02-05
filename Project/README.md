@@ -1,5 +1,4 @@
 # Cat Hunt - An Adventure in Pygame
-# Video Demo: <URL HERE>
 # Description:
 Cat Hunt is an adventurous Python game crafted with the Pygame library. It immerses players in an exhilarating journey where they assume control of a character on a mission to hunt down enemies and gather bonuses. Key features include:
 
@@ -19,7 +18,7 @@ Cat Hunt is an adventurous Python game crafted with the Pygame library. It immer
 
     8-Game Over Screen: Upon depletion of lives, the game over screen emerges, affording players the option to either restart their adventure or  gracefully exit the game.
 
-As for how to Play,Run the Python script main.py then enter your username on the start screen and use the arrow keys to control the character (Up Arrow for now) and navigate through obstacles, defeat enemies, and collect bonuses to increase your score.Moreover,avoid collisions with enemies to prevent losing lives.Hence,when you run out of lives, the game over screen will appear. You can choose to restart or quit the game.
+As for how to Play,Run the Python script project.py then enter your username on the start screen and use the arrow keys to control the character (Up Arrow for now) and navigate through obstacles, defeat enemies, and collect bonuses to increase your score.Moreover,avoid collisions with enemies to prevent losing lives.Hence,when you run out of lives, the game over screen will appear. You can choose to restart or quit the game.
 
 More into the project content , the project is divided into 3 main files which are the Main.py , Player_Enemy.py and I_O_display.py ,so lets clear them starting with main.py which include several functions beside the main fnc which will be discussed soon , so the main fnc is where the super loop/great loop which keep the game running exist besided the loop it starts with initilaizing pygame then defining the clock , display surface where our game will be displayed on it unlike regular surface that represent each object to be displayed on the main surface which is game screen which is display surface as mentioned .
 
