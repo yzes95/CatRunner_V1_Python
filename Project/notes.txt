@@ -1,0 +1,364 @@
+controlling frame rate (how fast ur game run)
+
+in movies frame rate is constant around 24 per sec
+
+but for games it fluctate quite a bit which depend on both videocard and screen resolution of the device 
+
+thats why controlling a game frame per second  is required so the game can run with respect to each device specs and
+to manage a slow running device u need to be able to control the amount of details previwed/ showe don the screen per second 
+
+as the animation speed depend on how fast we update our game /window/surface
+
+perfect/ideal frame rate is the constant frame rate either constant 60 or 120 or 165 those are standards fps
+
+to be able to control the fps u need a clock that is related to time which is related to fps output
+
+60fps ceiling / 60fps floor specs..........
+https://www.geeksforgeeks.org/difference-between-floor-and-ceil-function/
+
+
+animating mean moving / chaning the postion of the surface / char slightly on each frame
+
+rectangle got variouse fnc 2 of them are most imp which are :
+1-precise positioning of surface :where it allow u to determine postiong
+of surface from different points rather than top left corner and thats allow 
+use to position a surface in 2 steps 
+    1-actual info of the image is placed on 
+    surface then 
+    2-position info is placed in the rectangle
+
+2-Basic Collisions 
+
+
+rectangle points control can be through tuple or individual 
+points and each point in the rectangle move relatively with each other 
+
+
+collisions:
+it is a process that determined when a rectangle meet another rectangle
+
+rect.collide(the rectangle u want to check against urs)
+
+or 
+
+rect.collidepoint((x,y)) where it check wether 
+one point collide with a rect or not and it is good in games that depend on mouse
+
+how to get mouse postion /indvidual points:
+1-pygame.mouse: it provide u with the mouse postion or the buttons
+ pressed or setting the mouse at a certain postion or check visability
+    check pygame documentation for more info.
+
+    example:
+    mouse_pos = pygame.mouse.get_pos()
+    #return true or false
+    if player_rect.collidepoint(mouse_pos):
+        #return a tuble of the state of each button wether pressed or not as in True or Flase 
+        if pygame.mouse.get_pressed()[0]:
+            print(mouse_pos)
+
+
+2-event loop (it is the loop where we check the user inputs) 
+by checking the events that use mouse postion:
+   example:
+        #event loop used to get mouse postion:
+        if event.type == pygame.MOUSEMOTION:
+            print(event.pos)
+       
+    or 
+        #used to check if the mouse button is clicked or not   
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_rect.collidepoint(event.pos):
+                print(event.pos)
+
+        #it print the mouse postion whenever the mouse is detected to move in the display surface
+
+
+
+rectangles can also be sued to draw images on the display surface throught pygame.draw module
+
+where u pass to draw a rect and draw either a rect within it or circle or square or etc...
+or u pass 2 points (x,y) each to draw a straight line 
+
+
+colors:
+
+#drawing rect over /behind the score text: 
+    #where this pygame.Rect can be any shape check doc.
+    #pygame.draw.rect(display surface,color,rectangle to be drawn,border width)
+    #once u specifi a line width the pygame remove the shading and leave an outline border
+    #example with no width
+    pygame.draw.rect(screen,"Green",score_rect)
+
+
+rgb:
+rgb_color=(red,Green,blue)
+from 0 ~ 255
+
+hexadecimalcolors:
+hex_color = #rrggbb
+from 0 ~ ff
+
+keyboard input:
+    jump and gravity    
+        floor
+
+keyboard input using pygame.key:
+it can eb done with either pygame.kry or ebent loop same as mouse
+there is a table for each button description at a file in this folder
+ pygame_keybaord_buttons_plot.txt
+
+     #it is better to use the the pygame.key apprach when using classes than using event
+        #loop but if u seek faster response we better of using event loop so 
+        #it is a trade off betwene size and performance or try to place it inside event looop
+
+to access a certain button state :
+keys = pygame.key.get_pressed()
+keys[pygame.K_SPACE]
+
+keyboard using event loop:
+    done through 2 process which make it better in controling
+     input for lkeyboard than pygame.key
+    1-check if any button was pressed 
+    2-then check for a specific key 
+same goes with released 
+ #event loop used to check keyboard status
+        if event.type == pygame.KEYDOWN:
+            print("Key Down")
+        if event.type == pygame.KEYUP:
+            print("Key up")
+        
+        #to check specific kEy:
+        if event.type == pygame.K_SPACE:
+            print("Jump")
+
+when using classes it is better to use input method 
+relevant to that class therefore pygame.mouse or . key
+are a better approach for that but for general case like closing 
+client using event loop will more effcient
+
+
+jump and gravity:
+gravity is not a linerar fnc but exponential fnc which means the longer u fall
+the faster u fall ?!
+
+we will try this approach by imitating the exp fnc not exactly doing it:
+1-creat a vriable that have a gravity : g +=somevalue
+
+2- player.y += g and since our gravty is increaaingby time , the speed where the player drop by
+will look like it is increasing which will look like exp fnc / exp drop
+
+and since the jump distance not that far the players wont notice it but like in assissan creed
+ofc they used exp fnc or somekidn fo a better appraoch to make it look like actual drop ...
+
+Measuring time as a score ref :
+pygame.time.get_ticks()
+which givues us the in milisecond since we started our pygame specificaly pygame.init()
+
+
+transform sub package of pygame:
+#intro screen
+player_surface_stand = pygame.image.load("graphics/player/player_stand.png").convert_alpha()
+player_surface_stand_scaled = pygame.transform.scale(player_surface_stand,(200,400))
+player_rect_stand = player_surface_stand_scaled.get_rect(center=(400, 200))
+
+player_surface_stand = pygame.image.load("graphics/player/player_stand.png").convert_alpha()
+player_surface_stand = pygame.transform.rotozoom(player_surface_stand,0,2)#surf,ang,scales
+player_rect_stand = player_surface_stand.get_rect(center=(400, 200))
+
+
+better enemy spwan logic :
+timers: it is an approach that allow us to run certain kind of code at a certain time intervals 
+which can be achived /triggered using the event loop and pygame since time is an instace of pygame
+
+steps:
+1-create a custome event
+2-tell pygame to trigger that event continuosuly 
+3-add code in the event loop
+
+#creation of custome event
+#Timers: we added +1 because there some events that are already reserved 
+#for pygame it self and to avoid conflict with those we add +1 to each event we going to add 
+#for more info check pygame doc 
+obstacle_timer = pygame.USEREVENT +1
+#event triggering
+#pygame.time.set_timer(event to be triggered,how often in ms)
+pygame.time.set_timer(obstacle_timer,1500)
+
+
+approach for enemy logic :
+1-we create an empty list of obstacles rects
+2-everytime the timer triggers we add a new rectangle to that list
+3-we move every rectangle in that list tot he left on every cycle /frame
+4-we delete rectangles that went beyond display surface boundaries to the left side for this game 
+
+
+animation:
+changing image each cycle on the same surface 
+the guy approach was making his own timer that update the player surface
+and use the built in timer for the obstacles animation and surface update
+
+you cant upload animated gif but u can diassemble the gif into variouse frame images using seprate tool
+then animate it your self
+
+
+sprite class:
+it is a class that have both surface and a rectangle within it and it can be drawn and uodated easily
+so we will create a sprite class for player and each obstacle
+
+since sprite is a sur and rect combined hence we wont be able to use screen.blit
+therefore we will use the draw fnc by addoing all our sprites into groups then 
+this group will draw/update all sprites in side of it    
+    
+    Groups:
+    it isa  way used to control the sprites drawing and updating and they do divide into 2 types
+    1-regular group which can contain multiple types of sprites (obstacles good for it)
+    2-group single which is a group for a single sprite that ahve specific chars which will be used for the player
+    and  we placing them in diff groups so we can check for collisions
+
+example for group single :
+player = pygame.sprite.GroupSingle()
+player.add(Player()) 
+
+after adding the player into single group now we can use draw fnc to draw/update
+example:
+player.draw(screen) where screen is the surface to be displayed on 
+
+spritecollide(sprite,group,dokill)
+it is where it takes sprite and check if it does collide with elemnt of provided group
+and return a list of all the collisions
+
+sound:
+        self.jump_sound = pygame.mixer.Sound("audio/jump.mp3")
+        self.jump_sound.set_volume(0.5)#use a value between 0 and 1
+
+
+bg_music = pygame.mixer.Sound("audio/music.wav")
+bg_music.set_volume(0.25)
+bg_music.play(loops = -1)#-1 means loop 4 ever
+
+
+self project hints:
+      1-  using sprite class u should name ur surface as image and ur rect as rect so self.image and self.rect
+        without using event loop specfically the part of "for event in pygame.event.get():" the window might get laggy or freeze
+
+      2-  to get the keys pressed by the user we use the event loop by the statment of :
+            event.unicode which provide u with the key pressed except for enter and backspace
+            therefore pygame only render online per code if u need multiple lines u need to code it ur self
+                    example for this :
+                    base_font = pygame.font.Font(None,32)
+                    user_text = " "
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_BACKSPACE:
+                                    user_text = user_text[0:-1]#from 1st letter to the one before last
+                                else:
+                                    user_text += event.unicode
+        
+        3-music:
+            pygame.mixer.sound ruin the files given to it
+            pygame.mixer.music.get_busy check if there is a song running or not
+            pygame.mixer.music.stop()  stop
+            pygame.mixer.music.unload()   unload
+            pygame.mixer.music.load("Audio/BG_Music.wav")  load
+            pygame.mixer.music.play(loops=-1)   play
+
+    4-for groups group single will delte its previosue call of .add if it called .add again unlike regular groups
+    where it will just add over its prev call
+
+
+    5-collision_coord = [(sprite.rect.center,sprite.kill()) for sprite in collision_list]      
+                   x_collide,y_collide = collision_coord[0][0]  
+                   
+                    this line of code return  the coordinates but collision_coord return :[((442, 773), None)]
+    
+    6-code snipet for how to update screen and take a capture of screen :
+    if collision_list:=pygame.sprite.spritecollide(game_player.sprite,game_Enemy_T,False):
+                   collision_coord = [(sprite.rect.center,sprite.kill()) for sprite in collision_list]      
+                   x_collide,y_collide = collision_coord[0][0]    
+                   draw_g.movment(D_Surface) 
+                   BG_capture = D_Surface.copy()
+                   frozen = True
+                
+            else:
+                D_Surface.blit(BG_capture,(0,0))
+                if cloud_flag == 0:
+                    fight_cloud = cloud(x_collide-150,y_collide)
+                    cloud_flag = 1
+                fight_cloud.animate(D_Surface)
+                pygame.display.flip()
+
+    7- so for csv files u cant update a single line in them either update/overwrite all or append a single row 
+    and for whole update u just save it in a list and update ur element then write it all back in the csv file
+
+    8-csv file cannot be read unless u have lines added to it and to add headers u need to used .writeheader command
+    example:
+    def New_User(text:str,score:int):
+    with open ("Player_info.csv") as file1:
+        reading_data = csv.DictReader(file1)
+        for checklist in reading_data:
+            flag = True
+        if flag:#this line doesnt check number of lines
+            key1,key2 = reading_data.fieldnames
+            print(single_line_data in reading_data)
+            for single_line_data in reading_data:
+                if  single_line_data[key1] != text:
+                    with open("Player_info.csv","a") as file2:
+                        adding_data = csv.DictWriter(file2,fieldnames = ["playername","score"])  
+                        adding_data.writerow(single_line_data)
+        else:
+            with open("Player_info.csv","a") as file2:
+                        adding_data = csv.DictWriter(file2,fieldnames = ["playername","score"])  
+                        adding_data.writeheader()#here it will write it every time u call a new user which isn not practical
+                        adding_data.writerow({"playername":text,"score":score})
+
+    
+    9- for groupsingle sprites u can access the data of the sprite in this group by :
+            game_player.sprite.rect.y #where game_player is a group single
+        while in group sprite u need to for loop on the group so u can acces each element which is a sprite of its own and u can
+        acces its data by :
+        for F_Lsprite in F_L:
+                    if game_player.sprite.rect.y <= F_Lsprite.rect.top
+
+        whole example :
+        #collision check for flying floor:
+                for F_Lsprite in F_L:
+                    if game_player.sprite.rect.y <= F_Lsprite.rect.top and pygame.sprite.collide_mask(game_player.sprite,F_Lsprite):
+                            #F_Lsprite.rect.top = 450
+                            print("collision happened")
+                            game_player.sprite.rect.bottom = F_Lsprite.rect.top +150 
+                            flag_pos_reset = 1
+                    elif flag_pos_reset and game_player.sprite.rect.bottom == (F_Lsprite.rect.top +150):
+                        game_player.sprite.rect.bottom = 860
+                        flag_pos_reset = 0
+
+    10- for multiple for loop checks :
+        # iterates over 3 lists and till all are exhausted
+        for (a, b, c) in itertools.zip_longest(num, color, value):
+            print (a, b, c)
+        or
+        for (a, b, c) in zip(num, color, value):
+            print (a, b, c)
+    
+    11- use of any to check for values in a list of dic:
+    list_of_dicts = [{'key1': 'value1', 'key2': 'value2'}, {'key3': 'value3', 'key4': 'value4'}]
+    value_to_check = 'value2'
+
+    # Using list comprehension and any()
+    value_exists = any(value_to_check in d.values() for d in list_of_dicts)
+
+    if value_exists:
+        print(f"The value '{value_to_check}' exists in at least one dictionary.")
+    else:
+        print(f"The value '{value_to_check}' does not exist in any dictionary.")
+
+
+
+# Background Music: [Online Ai Tool] (https://soundraw.io/)
+# Font Credits: https://www.dafont.com/high-mount.font and https://github.com/clear-code-projects/UltimatePygameIntro/tree/main/font
+# Artwork: https://www.artstation.com/artwork/GX3EQa and https://giphy.com/TEEY/legend-of-zelda and https://in.pinterest.com/pin/306104105924029733/
+# Guidance : https://www.youtube.com/watch?v=AY9MnQ4x3zk and https://www.pygame.org/docs/tut/newbieguide.html and https://www.youtube.com/watch?v=tJiKYMQJnYg and https://pygame.readthedocs.io/en/latest/rect/rect.html
